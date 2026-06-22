@@ -8,11 +8,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type WalletController struct {
-	WalletService services.WalletService
+type CategoryController struct {
+	CategoryService services.CategoryService
 }
 
-func (a *WalletController) GetWallet(c *gin.Context) {
+func (a *CategoryController) GetCategory(c *gin.Context) {
 
 	userIdRaw, exists := c.Get("userId")
 	if !exists {
@@ -26,14 +26,14 @@ func (a *WalletController) GetWallet(c *gin.Context) {
 		return
 	}
 
-	user, err := a.WalletService.GetWalletByUserId(userId)
+	user, err := a.CategoryService.GetCategoryByUserId(userId)
 
 	if err != nil {
 		c.JSON(401, gin.H{"message": err.Error()})
 		return
 	}
 
-	res := response.SuccessResponse[[]response.WalletResponse]{
+	res := response.SuccessResponse[[]response.CategoryResponse]{
 		Message: "success",
 		Result:  user,
 	}
@@ -41,8 +41,8 @@ func (a *WalletController) GetWallet(c *gin.Context) {
 	c.JSON(200, res)
 }
 
-func (a *WalletController) CreateWallet(c *gin.Context) {
-	var input request.WalletDto
+func (a *CategoryController) CreateCategory(c *gin.Context) {
+	var input request.CategoryDto
 
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(400, gin.H{"error": err.Error()})
@@ -61,50 +61,28 @@ func (a *WalletController) CreateWallet(c *gin.Context) {
 		return
 	}
 
-	wallet, err := a.WalletService.CreateWallet(input, userId)
+	input.UserId = userId
+
+	user, err := a.CategoryService.CreateCategory(input)
 
 	if err != nil {
 		c.JSON(401, gin.H{"error": err.Error()})
 		return
 	}
 
-	res := response.SuccessResponse[response.WalletResponse]{
+	res := response.SuccessResponse[response.CategoryResponse]{
 		Message: "success",
-		Result:  wallet,
+		Result:  user,
 	}
 
 	c.JSON(200, res)
 }
 
-func (a *WalletController) UpdateWallet(c *gin.Context) {
-	walletId := c.Param("walletId")
+func (a *CategoryController) DeleteCategory(c *gin.Context) {
 
-	var input request.WalletDto
-	if err := c.ShouldBindJSON(&input); err != nil {
-		c.JSON(400, gin.H{"error": err.Error()})
-		return
-	}
+	categoryId := c.Param("categoryId")
 
-	wallet, err := a.WalletService.UpdateWallet(walletId, input)
-
-	if err != nil {
-		c.JSON(401, gin.H{"error": err.Error()})
-		return
-	}
-
-	res := response.SuccessResponse[response.WalletResponse]{
-		Message: "success",
-		Result:  wallet,
-	}
-
-	c.JSON(200, res)
-}
-
-func (a *WalletController) DeleteWallet(c *gin.Context) {
-
-	walletId := c.Param("walletId")
-
-	err := a.WalletService.DeletWalletByWalletId(walletId)
+	err := a.CategoryService.DeleteCategory(categoryId)
 
 	if err != nil {
 		c.JSON(401, gin.H{"error": err.Error()})

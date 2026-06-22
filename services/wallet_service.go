@@ -19,20 +19,24 @@ func NewWalletService(walletRepo repositories.WalletRepository) WalletService {
 	return WalletService{WalletRepo: walletRepo}
 }
 
-func (s *WalletService) GetWalletByUserId(userId string) (response.WalletResponse, error) {
+func (s *WalletService) GetWalletByUserId(userId string) ([]response.WalletResponse, error) {
 
 	wallet, err := s.WalletRepo.FindWalletByUserId(userId)
 
 	if err != nil {
-		return response.WalletResponse{}, errors.New("Data not found")
+		return []response.WalletResponse{}, errors.New("Data not found")
 	}
 
-	walletResponse := response.WalletResponse{
-		WalletId:     wallet.WalletId,
-		WalletName:   wallet.WalletName,
-		WalletDetail: wallet.WalletDetail,
-		Balance:      wallet.Balance,
-		UserId:       wallet.UserId,
+	var walletResponse []response.WalletResponse
+
+	for _, wallet := range wallet {
+		walletResponse = append(walletResponse, response.WalletResponse{
+			WalletId:     wallet.WalletId,
+			WalletName:   wallet.WalletName,
+			WalletDetail: wallet.WalletDetail,
+			Balance:      wallet.Balance,
+			UserId:       wallet.UserId,
+		})
 	}
 
 	return walletResponse, nil
@@ -45,7 +49,7 @@ func (s *WalletService) CreateWallet(walletDto request.WalletDto, userId string)
 		WalletDetail: utils.StringPtr(walletDto.WalletDetail),
 		Balance:      walletDto.Balance,
 		UserId:       userId,
-		CreatedAt:    utils.NowTH(),
+		CreatedAt:    utils.NowUTC(),
 	}
 
 	wallet, err := s.WalletRepo.CreateWallet(walletRequest)
@@ -68,7 +72,7 @@ func (s *WalletService) UpdateWallet(walletId string, walletDto request.WalletDt
 	walletRequest := models.Wallet{
 		WalletName:   walletDto.WalletName,
 		WalletDetail: utils.StringPtr(walletDto.WalletDetail),
-		UpdatedAt:    utils.NowTH(),
+		UpdatedAt:    utils.NowUTC(),
 	}
 
 	err := s.WalletRepo.UpdateWallet(walletId, &walletRequest)

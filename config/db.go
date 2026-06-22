@@ -13,7 +13,7 @@ var DB *gorm.DB
 
 func ConnectDB() {
 	cfg := gomysql.Config{
-		User:                 "root",
+		User:                 "admin",
 		Passwd:               "admin1234",
 		Net:                  "tcp",
 		Addr:                 "127.0.0.1:3306",

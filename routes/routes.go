@@ -29,4 +29,11 @@ func SetupRoutes(r *gin.Engine, app container.App) {
 	auth.POST("/wallet", app.WalletController.CreateWallet)
 	auth.PUT("/wallet/:walletId", app.WalletController.UpdateWallet)
 	auth.DELETE("/wallet/:walletId", app.WalletController.DeleteWallet)
+
+	auth.GET("/categories", app.CategoryController.GetCategory)
+	auth.POST("/categories", app.CategoryController.CreateCategory)
+	auth.DELETE("/categories/:categoryId", app.CategoryController.DeleteCategory)
+
+	auth.GET("/transaction", app.TransactionController.GetAllTransactionByWalletId)
+	auth.POST("/transaction", app.TransactionController.CreateTransaction)
 }

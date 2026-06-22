@@ -3,6 +3,9 @@ package repositories
 import (
 	"backend-go-mysql/config"
 	"backend-go-mysql/models"
+
+	"github.com/shopspring/decimal"
+	"gorm.io/gorm"
 )
 
 type WalletRepository struct{}
@@ -11,9 +14,9 @@ func NewWalletRepository() WalletRepository {
 	return WalletRepository{}
 }
 
-func (r *WalletRepository) FindWalletByUserId(userId string) (models.Wallet, error) {
-	var wallet models.Wallet
-	result := config.DB.Where("user_id = ?", userId).First(&wallet)
+func (r *WalletRepository) FindWalletByUserId(userId string) ([]models.Wallet, error) {
+	var wallet []models.Wallet
+	result := config.DB.Where("user_id = ?", userId).Find(&wallet)
 
 	return wallet, result.Error
 }
@@ -37,4 +40,11 @@ func (r *WalletRepository) DeleteWalletByWalletId(walletId string) error {
 	return config.DB.
 		Where("wallet_id = ?", walletId).
 		Delete(&models.Wallet{}).Error
+}
+
+func (r *WalletRepository) UpdateBalance(walletId string, amount decimal.Decimal) error {
+	return config.DB.
+		Model(&models.Wallet{}).
+		Where("wallet_id = ?", walletId).
+		Update("balance", gorm.Expr("balance + ?", amount)).Error
 }
