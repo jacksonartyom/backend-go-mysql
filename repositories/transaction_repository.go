@@ -53,3 +53,34 @@ func (r *TransactionRepository) FindByWalletId(
 
 	return results, nil
 }
+
+func (r *TransactionRepository) FindTop5ByUserId(userId string) ([]response.TransactionDashboardResponse, error) {
+
+	var results []response.TransactionDashboardResponse
+
+	err := config.DB.
+		Table("transactions tran").
+		Select(`
+			tran.transaction_id,
+			tran.wallet_id,
+			tran.name,
+			tran.amount,
+			tran.note,
+			tran.type,
+			tran.transaction_date,
+			tran.category_id,
+			cate.name AS category_name,
+			tran.user_id
+		`).
+		Joins("LEFT JOIN categories cate ON tran.category_id = cate.category_id").
+		Where("tran.user_id = ?", userId).
+		Order("tran.transaction_date DESC").
+		Limit(5).
+		Scan(&results).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return results, nil
+}

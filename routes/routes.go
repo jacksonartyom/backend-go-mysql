@@ -36,4 +36,6 @@ func SetupRoutes(r *gin.Engine, app container.App) {
 
 	auth.GET("/transaction", app.TransactionController.GetAllTransactionByWalletId)
 	auth.POST("/transaction", app.TransactionController.CreateTransaction)
+
+	auth.GET("/dashboard", app.DashboardController.GetDashboard)
 }

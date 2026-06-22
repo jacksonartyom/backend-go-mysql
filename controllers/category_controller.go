@@ -26,7 +26,7 @@ func (a *CategoryController) GetCategory(c *gin.Context) {
 		return
 	}
 
-	user, err := a.CategoryService.GetCategoryByUserId(userId)
+	category, err := a.CategoryService.GetCategoryByUserId(userId)
 
 	if err != nil {
 		c.JSON(401, gin.H{"message": err.Error()})
@@ -35,7 +35,7 @@ func (a *CategoryController) GetCategory(c *gin.Context) {
 
 	res := response.SuccessResponse[[]response.CategoryResponse]{
 		Message: "success",
-		Result:  user,
+		Result:  category,
 	}
 
 	c.JSON(200, res)
@@ -63,7 +63,7 @@ func (a *CategoryController) CreateCategory(c *gin.Context) {
 
 	input.UserId = userId
 
-	user, err := a.CategoryService.CreateCategory(input)
+	category, err := a.CategoryService.CreateCategory(input)
 
 	if err != nil {
 		c.JSON(401, gin.H{"error": err.Error()})
@@ -72,7 +72,7 @@ func (a *CategoryController) CreateCategory(c *gin.Context) {
 
 	res := response.SuccessResponse[response.CategoryResponse]{
 		Message: "success",
-		Result:  user,
+		Result:  category,
 	}
 
 	c.JSON(200, res)

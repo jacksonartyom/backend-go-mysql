@@ -48,3 +48,19 @@ func (r *WalletRepository) UpdateBalance(walletId string, amount decimal.Decimal
 		Where("wallet_id = ?", walletId).
 		Update("balance", gorm.Expr("balance + ?", amount)).Error
 }
+
+func (r *WalletRepository) SumBalanceByUserId(userId string) (decimal.Decimal, error) {
+	var totalBalance decimal.Decimal
+
+	err := config.DB.
+		Table("wallets").
+		Select("COALESCE(SUM(balance), 0)").
+		Where("user_id = ?", userId).
+		Scan(&totalBalance).Error
+
+	if err != nil {
+		return decimal.Zero, err
+	}
+
+	return totalBalance, nil
+}

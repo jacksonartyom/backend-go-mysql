@@ -15,6 +15,7 @@ type App struct {
 	WalletController      controllers.WalletController
 	CategoryController    controllers.CategoryController
 	TransactionController controllers.TransactionController
+	DashboardController   controllers.DashboardController
 }
 
 func Build(jwtService *utils.JwtService) App {
@@ -28,6 +29,7 @@ func Build(jwtService *utils.JwtService) App {
 	walletService := services.NewWalletService(walletRepo)
 	categoryService := services.NewCategoryService(categoryRepo)
 	transactionServcie := services.NewTransactionService(transactionRepo, walletRepo)
+	dashboardServie := services.NewDashboardService(transactionRepo, walletRepo)
 
 	return App{
 		AuthController:        controllers.AuthController{AuthService: authService},
@@ -36,5 +38,6 @@ func Build(jwtService *utils.JwtService) App {
 		WalletController:      controllers.WalletController{WalletService: walletService},
 		CategoryController:    controllers.CategoryController{CategoryService: categoryService},
 		TransactionController: controllers.TransactionController{TransactionService: transactionServcie},
+		DashboardController:   controllers.DashboardController{DashboardService: dashboardServie},
 	}
 }
