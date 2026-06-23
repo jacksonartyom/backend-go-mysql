@@ -21,6 +21,7 @@ func SetupRoutes(r *gin.Engine, app container.App) {
 
 	// upload file (protected)
 	auth.POST("/upload/profile", app.FileController.UploadFile)
+	auth.POST("/upload/transaction", app.FileController.UploadExcel)
 
 	// serve static file (ต้องอยู่นอก group)
 	r.Static("/files", "./uploads")
@@ -38,4 +39,5 @@ func SetupRoutes(r *gin.Engine, app container.App) {
 	auth.POST("/transaction", app.TransactionController.CreateTransaction)
 
 	auth.GET("/dashboard", app.DashboardController.GetDashboard)
+
 }

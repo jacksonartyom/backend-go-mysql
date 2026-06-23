@@ -28,8 +28,9 @@ func Build(jwtService *utils.JwtService) App {
 	userService := services.NewUserService(userRepo)
 	walletService := services.NewWalletService(walletRepo)
 	categoryService := services.NewCategoryService(categoryRepo)
-	transactionServcie := services.NewTransactionService(transactionRepo, walletRepo)
-	dashboardServie := services.NewDashboardService(transactionRepo, walletRepo)
+	transactionService := services.NewTransactionService(transactionRepo, walletRepo)
+	dashboardService := services.NewDashboardService(transactionRepo, walletRepo)
+	fileService := services.NewFileService(transactionService)
 
 	return App{
 		AuthController:        controllers.AuthController{AuthService: authService},
@@ -37,7 +38,8 @@ func Build(jwtService *utils.JwtService) App {
 		JwtService:            jwtService,
 		WalletController:      controllers.WalletController{WalletService: walletService},
 		CategoryController:    controllers.CategoryController{CategoryService: categoryService},
-		TransactionController: controllers.TransactionController{TransactionService: transactionServcie},
-		DashboardController:   controllers.DashboardController{DashboardService: dashboardServie},
+		TransactionController: controllers.TransactionController{TransactionService: transactionService},
+		DashboardController:   controllers.DashboardController{DashboardService: dashboardService},
+		FileController:        controllers.FileController{FileService: fileService},
 	}
 }
